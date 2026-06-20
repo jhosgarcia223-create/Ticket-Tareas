@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Task Manager Pro - Accesos</title>
+    <title>Ticket Task Manager - Cloud Pro</title>
     <style>
         /* ========================
            DISEÑO BASE
@@ -26,9 +26,7 @@
 
         .hidden { display: none !important; }
 
-        /* ========================
-           PANTALLA DE LOGIN
-           ======================== */
+        /* PANTALLA DE LOGIN */
         #loginScreen {
             background: white;
             padding: 40px;
@@ -39,13 +37,10 @@
             text-align: center;
             margin-top: 5vh;
         }
-
         #loginScreen h2 { margin-top: 0; font-weight: 800; color: #4F46E5; }
         .error-msg { color: #EF4444; font-size: 0.85rem; margin-top: 10px; min-height: 20px;}
 
-        /* ========================
-           INTERFAZ PRINCIPAL
-           ======================== */
+        /* INTERFAZ PRINCIPAL */
         #appScreen { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; }
 
         .header-actions {
@@ -75,15 +70,8 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .user-badge {
-            font-size: 0.75rem;
-            background: #111827;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            -webkit-text-fill-color: initial;
-        }
-
+        .user-badge { font-size: 0.75rem; background: #111827; color: white; padding: 4px 10px; border-radius: 12px; -webkit-text-fill-color: initial; }
+        .header-date { font-size: 0.85rem; font-weight: 700; color: #4B5563; background: #E5E7EB; padding: 4px 12px; border-radius: 20px; -webkit-text-fill-color: initial; }
         .nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
 
         .board {
@@ -94,9 +82,7 @@
             margin-bottom: 40px;
         }
 
-        /* ========================
-           DISEÑO DEL TICKET Y BOTONES
-           ======================== */
+        /* DISEÑO TICKET */
         .ticket {
             position: relative;
             border-radius: 24px;
@@ -108,8 +94,13 @@
             background-color: var(--bg);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
-
         .ticket:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+
+        .ticket::before, .ticket::after {
+            content: ''; position: absolute; bottom: 85px; width: 24px; height: 24px; background-color: #F3F4F6; border-radius: 50%; z-index: 2;
+        }
+        .ticket::before { left: -12px; }
+        .ticket::after { right: -12px; }
 
         .ticket-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
         .ticket-date { font-family: 'Space Mono', monospace; font-size: 0.75rem; background: rgba(0,0,0,0.06); padding: 4px 8px; border-radius: 6px; font-weight: 600; }
@@ -121,7 +112,6 @@
         .ticket-desc { font-size: 0.9rem; opacity: 0.75; margin: 0; line-height: 1.4; }
 
         .divider { width: 100%; height: 2px; background-image: linear-gradient(to right, rgba(0,0,0,0.2) 50%, rgba(255,255,255,0) 0%); background-size: 10px 2px; background-repeat: repeat-x; margin: 24px 0 16px 0; }
-
         .actions { display: flex; justify-content: space-between; gap: 6px; }
 
         button { border: none; border-radius: 14px; padding: 10px 14px; font-size: 0.85rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: 0.2s; }
@@ -141,7 +131,7 @@
         .ticket.canceled { opacity: 0.35; filter: grayscale(100%); }
         .ticket.canceled .ticket-title { text-decoration: line-through; }
 
-        /* FORMULARIOS Y MODALES */
+        /* MODALES */
         .form-group { margin-bottom: 16px; text-align: left; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: #4B5563; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #E5E7EB; border-radius: 12px; font-family: inherit; }
@@ -155,27 +145,30 @@
         .pagination { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; width: 100%; }
         .pagination button { width: 40px; height: 40px; padding: 0; border-radius: 12px; }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
     <div id="loginScreen">
-        <h2>Iniciar Sesión</h2>
+        <h2>Tickets Cloud</h2>
         <div class="form-group">
             <label>Usuario</label>
-            <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
+            <input type="text" id="loginUser" placeholder="Usuario">
         </div>
         <div class="form-group">
             <label>Contraseña</label>
-            <input type="password" id="loginPass" placeholder="Ingresa tu contraseña">
+            <input type="password" id="loginPass" placeholder="Contraseña">
         </div>
         <button class="btn-primary" onclick="login()">Entrar</button>
         <div id="loginError" class="error-msg"></div>
-        <p style="font-size: 0.8rem; color: #666; margin-top: 20px;">*El administrador por defecto es:<br>Usuario: <b>admin</b> | Clave: <b>admin123</b></p>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 20px;">Cuentas de equipo iniciales:<br><b>admin</b> (admin123) | <b>creativo</b> (123) | <b>alcaldia</b> (123)</p>
     </div>
 
     <div id="appScreen" class="hidden">
         <div class="header-actions">
-            <h1 class="header-title">🎫 Mis Tickets <span id="userBadge" class="user-badge"></span></h1>
+            <h1 class="header-title">🎫 Mis Tickets <span id="userBadge" class="user-badge"></span> <span class="header-date" id="displayDate"></span></h1>
             <div class="nav-buttons">
                 <button id="btnAdminUsers" class="btn-secondary hidden" onclick="openUserModal()">👥 Usuarios</button>
                 <button class="btn-primary" onclick="openTaskModal()">+ Nuevo Ticket</button>
@@ -193,7 +186,7 @@
             <input type="hidden" id="taskId">
             <div class="form-group">
                 <label>Título de la Tarea</label>
-                <input type="text" id="taskTitle" placeholder="Ej. Exportar fotografías">
+                <input type="text" id="taskTitle" placeholder="Título">
             </div>
             <div class="form-group">
                 <label>Descripción</label>
@@ -211,7 +204,7 @@
             <h3>Crear Nuevo Usuario</h3>
             <div class="form-group">
                 <label>Nombre de Usuario</label>
-                <input type="text" id="newUsername" placeholder="Ej. jperez">
+                <input type="text" id="newUsername" placeholder="Ej. diseñador2">
             </div>
             <div class="form-group">
                 <label>Contraseña</label>
@@ -233,40 +226,71 @@
     </div>
 
     <script>
+        // ==========================================
+        // CONFIGURACIÓN EXACTA DE TU FIREBASE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBuM3BLTwwBDKWX8pRHluziwKuxhANsrP0",
+            authDomain: "mis-tickets-app.firebaseapp.com",
+            databaseURL: "https://mis-tickets-app-default-rtdb.firebaseio.com",
+            projectId: "mis-tickets-app",
+            storageBucket: "mis-tickets-app.firebasestorage.app",
+            messagingSenderId: "319399745005",
+            appId: "1:319399745005:web:de740a0c5d4610c47d03e4",
+            measurementId: "G-3H1Q6078TE"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const colors = ['#C4B5FD', '#FCD34D', '#86EFAC', '#F9A8D4', '#93C5FD', '#FDBA74'];
         const ITEMS_PER_PAGE = 20;
         let currentPage = 1;
         let currentUser = null;
+        let tasks = [];
+        let usersDB = [];
 
-        // Base de datos local: Usuarios
-        let usersDB = JSON.parse(localStorage.getItem('ticketsUsers')) || [
-            { user: 'admin', pass: 'admin123', role: 'admin' },
-            { user: 'creativo', pass: '123', role: 'designer' },
-            { user: 'alcaldia', pass: '123', role: 'client' }
-        ];
+        document.getElementById('displayDate').innerText = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
 
-        // Base de datos local: Tareas
-        let tasks = JSON.parse(localStorage.getItem('ticketsApp')) || [
-            { id: 1, title: 'Revisar guion del spot', desc: 'Edición final para la Herranza Andina', date: '18/06/2026', state: '', color: '#C4B5FD' },
-            { id: 2, title: 'Confirmar temática', desc: 'Actualizar flyers de Alquitara Rústico', date: '19/06/2026', state: '', color: '#FCD34D' },
-            { id: 3, title: 'Redactar nota de prensa', desc: 'Borrador sobre obras en Uliachin', date: '20/06/2026', state: '', color: '#86EFAC' },
-            { id: 4, title: 'Exportar fotografías', desc: 'Revelar RAWs de la Sony A7 IV', date: '20/06/2026', state: '', color: '#F9A8D4' }
-        ];
-
-        // Utilidades
         const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
         const getFormattedDate = () => {
             const d = new Date();
             return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
         };
-        const saveLocalData = () => {
-            localStorage.setItem('ticketsApp', JSON.stringify(tasks));
-            localStorage.setItem('ticketsUsers', JSON.stringify(usersDB));
-        };
 
-        // ==========================================
-        // SISTEMA DE LOGIN Y SESIÓN
-        // ==========================================
+        // Sincronización en tiempo real de Usuarios
+        db.ref('users').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                usersDB = Object.values(data);
+            } else {
+                usersDB = [
+                    { user: 'admin', pass: 'admin123', role: 'admin' },
+                    { user: 'creativo', pass: '123', role: 'designer' },
+                    { user: 'alcaldia', pass: '123', role: 'client' }
+                ];
+                usersDB.forEach(u => db.ref('users/' + u.user).set(u));
+            }
+        });
+
+        // Sincronización en tiempo real de Tickets
+        db.ref('tickets').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                tasks = Object.values(data);
+            } else {
+                const defaultTasks = [
+                    { id: 1, title: 'Revisar guion del spot', desc: 'Edición final para el 27 Festival de la Herranza Andina - Tributo a la Pachamama', date: getFormattedDate(), state: '', color: '#C4B5FD' },
+                    { id: 2, title: 'Confirmar temática', desc: 'Actualizar flyers de Alquitara Rústico', date: getFormattedDate(), state: '', color: '#FCD34D' },
+                    { id: 3, title: 'Redactar nota de prensa', desc: 'Borrador sobre obras en Uliachin', date: getFormattedDate(), state: 'completed', color: '#86EFAC' },
+                    { id: 4, title: 'Revisión de proyecto visual', desc: 'Verificar descripciones del Muqui y la Glorieta en Cuando la luna alumbraba', date: getFormattedDate(), state: '', color: '#F9A8D4' }
+                ];
+                defaultTasks.forEach(t => db.ref('tickets/tk_' + t.id).set(t));
+                tasks = defaultTasks;
+            }
+            if (currentUser) renderTickets();
+        });
+
         function login() {
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
@@ -279,17 +303,14 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('appScreen').classList.remove('hidden');
                 
-                // Configurar UI según el rol
                 const rolesNombres = { 'admin': 'Admin', 'designer': 'Diseñador', 'client': 'Cliente' };
                 document.getElementById('userBadge').innerText = `${u} (${rolesNombres[currentUser.role]})`;
                 
-                // Mostrar botón de usuarios solo si es Admin
                 if (currentUser.role === 'admin') {
                     document.getElementById('btnAdminUsers').classList.remove('hidden');
                 } else {
                     document.getElementById('btnAdminUsers').classList.add('hidden');
                 }
-                
                 renderTickets();
             } else {
                 errorDiv.innerText = "Usuario o contraseña incorrectos.";
@@ -300,35 +321,28 @@
             currentUser = null;
             document.getElementById('loginUser').value = '';
             document.getElementById('loginPass').value = '';
-            document.getElementById('loginError').innerText = '';
             document.getElementById('appScreen').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
         }
 
-        // ==========================================
-        // GESTIÓN DE USUARIOS (Solo Admin)
-        // ==========================================
         function createUser() {
             const user = document.getElementById('newUsername').value.trim();
             const pass = document.getElementById('newUserPass').value.trim();
             const role = document.getElementById('newUserRole').value;
 
-            if (!user || !pass) return alert('Completa usuario y contraseña.');
+            if (!user || !pass) return alert('Completa todos los campos.');
             if (usersDB.find(u => u.user === user)) return alert('El usuario ya existe.');
 
-            usersDB.push({ user, pass, role });
-            saveLocalData();
-            alert(`Usuario ${user} creado exitosamente.`);
-            closeModal('userModal');
-            
-            // Limpiar formulario
-            document.getElementById('newUsername').value = '';
-            document.getElementById('newUserPass').value = '';
+            db.ref('users/' + user).set({ user, pass, role }, (err) => {
+                if(!err) {
+                    alert(`Usuario ${user} creado.`);
+                    closeModal('userModal');
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newUserPass').value = '';
+                }
+            });
         }
 
-        // ==========================================
-        // RENDERIZADO Y PERMISOS DE TAREAS
-        // ==========================================
         function renderTickets() {
             const board = document.getElementById('ticketBoard');
             board.innerHTML = '';
@@ -336,17 +350,15 @@
             const sortedTasks = [...tasks].sort((a, b) => b.id - a.id);
             const paginatedTasks = sortedTasks.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
-            // Lógica de Permisos
             const canEdit = currentUser.role === 'admin' || currentUser.role === 'client';
             const canComplete = currentUser.role === 'admin' || currentUser.role === 'designer';
             const canPauseCancel = currentUser.role === 'admin' || currentUser.role === 'client';
 
             paginatedTasks.forEach(task => {
                 const ticket = document.createElement('div');
-                ticket.className = `ticket ${task.state}`;
+                ticket.className = `ticket ${task.state || ''}`;
                 ticket.style.setProperty('--bg', task.color);
 
-                // Construcción condicional de botones basada en el rol
                 let editBtnHTML = canEdit ? `<button class="btn-edit-inline" onclick="openTaskModal(${task.id})" title="Editar">✏️</button>` : '';
                 
                 let actionsHTML = '';
@@ -392,16 +404,13 @@
         window.changeState = function(id, state) {
             const task = tasks.find(t => t.id === id);
             if (task) {
-                task.state = (task.state === state) ? '' : state;
-                saveLocalData();
-                renderTickets();
+                const newState = (task.state === state) ? '' : state;
+                db.ref('tickets/tk_' + id).update({ state: newState });
             }
         };
 
-        // Modales
         window.openTaskModal = function(id = null) {
-            if (id && (currentUser.role === 'designer')) return; // Bloqueo de seguridad adicional
-            
+            if (id && currentUser.role === 'designer') return;
             if (id) {
                 const task = tasks.find(t => t.id === id);
                 document.getElementById('modalTitle').innerText = 'Editar Ticket';
@@ -428,23 +437,22 @@
             if (!title) return alert('Por favor, ingresa un título.');
 
             if (id) {
-                const task = tasks.find(t => t.id === parseInt(id));
-                if (task) { task.title = title; task.desc = desc; }
-            } else {
-                tasks.push({
-                    id: tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
-                    title, desc, date: getFormattedDate(), state: '', color: getRandomColor()
+                db.ref('tickets/tk_' + id).update({ title, desc }, (err) => {
+                    if(!err) closeModal('taskModal');
                 });
-                currentPage = 1;
+            } else {
+                const nextId = tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+                const newTicket = {
+                    id: nextId, title, desc, date: getFormattedDate(), state: '', color: getRandomColor()
+                };
+                db.ref('tickets/tk_' + nextId).set(newTicket, (err) => {
+                    if(!err) {
+                        currentPage = 1;
+                        closeModal('taskModal');
+                    }
+                });
             }
-
-            saveLocalData();
-            closeModal('taskModal');
-            renderTickets();
         };
-
-        // Asegurar que al cargar, empiece en la pantalla de login
-        document.getElementById('appScreen').classList.add('hidden');
     </script>
 </body>
 </html>
