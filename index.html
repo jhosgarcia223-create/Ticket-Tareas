@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Task Manager Pro</title>
+    <style>
+        /* ========================
+           DISEÑO BASE (TENDENCIA)
+           ======================== */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Mono&display=swap');
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F3F4F6;
+            color: #111827;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Barra de Controles Superior */
+        .header-actions {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 16px 24px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title {
+            font-weight: 800;
+            font-size: 1.25rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #4F46E5, #9333EA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-date {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #4B5563;
+            background: #E5E7EB;
+            padding: 4px 12px;
+            border-radius: 20px;
+            -webkit-text-fill-color: initial; /* Resetea el gradiente del padre si hereda */
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Contenedor de Tickets */
+        .board {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 40px;
+        }
+
+        /* ========================
+           DISEÑO DEL TICKET
+           ======================== */
+        .ticket {
+            position: relative;
+            border-radius: 24px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            background-color: var(--bg);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .ticket:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .ticket::before, 
+        .ticket::after {
+            content: '';
+            position: absolute;
+            bottom: 85px;
+            width: 24px;
+            height: 24px;
+            background-color: #F3F4F6;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .ticket::before { left: -12px; }
+        .ticket::after { right: -12px; }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .ticket-date {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .btn-edit-inline {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .btn-edit-inline:hover { opacity: 1; }
+
+        .ticket-content {
+            flex-grow: 1;
+        }
+
+        .ticket-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin: 0 0 6px 0;
+            line-height: 1.25;
+        }
+
+        .ticket-desc {
+            font-size: 0.9rem;
+            opacity: 0.75;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .divider {
+            width: 100%;
+            height: 2px;
+            background-image: linear-gradient(to right, rgba(0,0,0,0.2) 50%, rgba(255,255,255,0) 0%);
+            background-position: bottom;
+            background-size: 10px 2px;
+            background-repeat: repeat-x;
+            margin: 24px 0 16px 0;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            position: relative;
+            z-index: 3;
+        }
+
+        button {
+            border: none;
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary { background: #111827; color: #fff; }
+        .btn-primary:hover { background: #374151; transform: translateY(-1px); }
+        
+        .btn-secondary { background: #fff; color: #111827; border: 1px solid #E5E7EB; }
+        .btn-secondary:hover { background: #F9FAFB; transform: translateY(-1px); }
+
+        .ticket .actions button {
+            background: rgba(255, 255, 255, 0.45);
+            color: #111827;
+            flex: 1;
+        }
+        .ticket .actions button:hover { background: rgba(255, 255, 255, 0.8); }
+        
+        .btn-check:hover { background: #10B981 !important; color: white; }
+        .btn-pause:hover { background: #F59E0B !important; color: white; }
+        .btn-cancel:hover { background: #EF4444 !important; color: white; }
+
+        .ticket.completed { opacity: 0.5; filter: grayscale(70%); }
+        .ticket.completed .ticket-title { text-decoration: line-through; }
+        .ticket.paused { border: 2px dashed rgba(0,0,0,0.25); background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.15), rgba(255,255,255,0.15) 10px, transparent 10px, transparent 20px); }
+        .ticket.canceled { opacity: 0.35; filter: grayscale(100%); }
+        .ticket.canceled .ticket-title { text-decoration: line-through; }
+
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+        .pagination button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 12px;
+        }
+
+        /* ========================
+           MODAL (FORMULARIO)
+           ======================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-content h3 { margin: 0 0 20px 0; font-weight: 800; font-size: 1.4rem; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #4B5563;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color: #4F46E5; }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-actions">
+        <h1 class="header-title">🎫 Mis Tickets <span class="header-date" id="displayDate"></span></h1>
+        <div class="nav-buttons">
+            <button class="btn-secondary" onclick="exportCompletedToExcel()">📥 Exportar Excel</button>
+            <button class="btn-primary" onclick="openModal()">+ Nuevo Ticket</button>
+        </div>
+    </div>
+
+    <div class="board" id="ticketBoard"></div>
+    
+    <div class="pagination" id="paginationControls"></div>
+
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Nuevo Ticket</h3>
+            <input type="hidden" id="taskId">
+            <div class="form-group">
+                <label for="taskTitle">Título de la Tarea</label>
+                <input type="text" id="taskTitle" placeholder="Ej. Exportar fotografías">
+            </div>
+            <div class="form-group">
+                <label for="taskDesc">Descripción</label>
+                <textarea id="taskDesc" rows="3" placeholder="Detalles de la tarea..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn-primary" onclick="saveTask()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const colors = ['#C4B5FD', '#FCD34D', '#86EFAC', '#F9A8D4', '#93C5FD', '#FDBA74'];
+        const ITEMS_PER_PAGE = 20;
+        let currentPage = 1;
+        
+        // Cargar tareas desde el almacenamiento local o usar las de prueba si está vacío
+        let tasks = JSON.parse(localStorage.getItem('myTicketsApp')) || [
+            { id: 1, title: 'Revisar guion del spot', desc: 'Edición final para la Herranza Andina', date: '18/06/2026', state: '', color: '#C4B5FD' },
+            { id: 2, title: 'Confirmar temática', desc: 'Actualizar flyers de Alquitara Rústico', date: '19/06/2026', state: '', color: '#FCD34D' },
+            { id: 3, title: 'Redactar nota de prensa', desc: 'Borrador para el Alcalde', date: '20/06/2026', state: 'completed', color: '#86EFAC' },
+            { id: 4, title: 'Exportar fotografías', desc: 'Revelar RAWs de la Sony A7 IV', date: '20/06/2026', state: '', color: '#F9A8D4' }
+        ];
+
+        const board = document.getElementById('ticketBoard');
+        const modal = document.getElementById('taskModal');
+        const paginationControls = document.getElementById('paginationControls');
+
+        // Mostrar fecha actual en el header (Mes y Día)
+        const dateOptions = { day: 'numeric', month: 'long' };
+        document.getElementById('displayDate').innerText = new Date().toLocaleDateString('es-ES', dateOptions);
+
+        const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
+        
+        function getFormattedDate() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        }
+
+        // Guardar datos en el navegador
+        function saveToLocalStorage() {
+            localStorage.setItem('myTicketsApp', JSON.stringify(tasks));
+        }
+
+        // Renderiza el tablero y la paginación
+        function renderTickets() {
+            board.innerHTML = '';
+            
+            // 1. ORDENAR: El último ID (el más reciente) siempre va primero
+            const sortedTasks = [...tasks].sort((a, b) => b.id - a.id);
+            
+            // 2. PAGINACIÓN: Cortar el arreglo para mostrar solo los 20 correspondientes a la página actual
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+            const paginatedTasks = sortedTasks.slice(startIndex, endIndex);
+
+            // 3. PINTAR TICKETS
+            paginatedTasks.forEach(task => {
+                const ticket = document.createElement('div');
+                ticket.className = `ticket ${task.state}`;
+                ticket.style.setProperty('--bg', task.color);
+
+                ticket.innerHTML = `
+                    <div class="ticket-header">
+                        <span class="ticket-date">N° ${String(task.id).padStart(4, '0')} • ${task.date}</span>
+                        <button class="btn-edit-inline" onclick="openModal(${task.id})" title="Editar tarea">✏️</button>
+                    </div>
+                    <div class="ticket-content">
+                        <h3 class="ticket-title">${task.title}</h3>
+                        <p class="ticket-desc">${task.desc}</p>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="actions">
+                        <button class="btn-check" onclick="changeState(${task.id}, 'completed')">✔</button>
+                        <button class="btn-pause" onclick="changeState(${task.id}, 'paused')">⏸</button>
+                        <button class="btn-cancel" onclick="changeState(${task.id}, 'canceled')">✖</button>
+                    </div>
+                `;
+                board.appendChild(ticket);
+            });
+
+            renderPagination(sortedTasks.length);
+        }
+
+        function renderPagination(totalItems) {
+            paginationControls.innerHTML = '';
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+            if (totalPages <= 1) return; // Ocultar si solo hay 1 página
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.innerText = i;
+                btn.className = i === currentPage ? 'btn-primary' : 'btn-secondary';
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderTickets();
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Subir al inicio al cambiar de página
+                };
+                paginationControls.appendChild(btn);
+            }
+        }
+
+        window.changeState = function(id, state) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.state = (task.state === state) ? '' : state;
+                saveToLocalStorage();
+                renderTickets();
+            }
+        };
+
+        window.openModal = function(id = null) {
+            if (id) {
+                const task = tasks.find(t => t.id === id);
+                document.getElementById('modalTitle').innerText = 'Editar Ticket';
+                document.getElementById('taskId').value = task.id;
+                document.getElementById('taskTitle').value = task.title;
+                document.getElementById('taskDesc').value = task.desc;
+            } else {
+                document.getElementById('modalTitle').innerText = 'Nuevo Ticket';
+                document.getElementById('taskId').value = '';
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDesc').value = '';
+            }
+            modal.classList.add('active');
+        };
+
+        window.closeModal = function() {
+            modal.classList.remove('active');
+        };
+
+        window.saveTask = function() {
+            const id = document.getElementById('taskId').value;
+            const title = document.getElementById('taskTitle').value.trim();
+            const desc = document.getElementById('taskDesc').value.trim();
+
+            if (!title) {
+                alert('Por favor, ingresa un título para la tarea.');
+                return;
+            }
+
+            if (id) {
+                const task = tasks.find(t => t.id === parseInt(id));
+                if (task) {
+                    task.title = title;
+                    task.desc = desc;
+                }
+            } else {
+                const newTask = {
+                    id: tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
+                    title: title,
+                    desc: desc,
+                    date: getFormattedDate(),
+                    state: '',
+                    color: getRandomColor()
+                };
+                tasks.push(newTask);
+                currentPage = 1; // Volver a la primera página para ver el ticket nuevo
+            }
+
+            saveToLocalStorage();
+            closeModal();
+            renderTickets();
+        };
+
+        window.exportCompletedToExcel = function() {
+            const completedTasks = tasks.filter(t => t.state === 'completed');
+            
+            if (completedTasks.length === 0) {
+                alert('No tienes ningún ticket marcado como concluido para exportar.');
+                return;
+            }
+
+            let csvContent = "\uFEFF"; 
+            csvContent += "Código Ticket;Fecha Registro;Título;Descripción;Estado\n";
+
+            completedTasks.forEach(t => {
+                const cleanTitle = t.title.replace(/"/g, '""');
+                const cleanDesc = t.desc.replace(/"/g, '""');
+                csvContent += `TK-${String(t.id).padStart(4, '0')};${t.date};"${cleanTitle}";"${cleanDesc}";Concluido\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `tickets_concluidos_${getFormattedDate().replace(/\//g, '-')}.csv`);
+            document.body.appendChild(link);
+            
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        // Iniciar la app guardando el estado inicial y renderizando
+        saveToLocalStorage();
+        renderTickets();
+    </script>
+</body>
+</html>
