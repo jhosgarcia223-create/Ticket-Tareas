@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Task Manager - Cloud Pro</title>
+    <title>Ticket Task Manager - Enterprise Cloud</title>
     <style>
         /* ========================
-           DISEÑO BASE
+           DISEÑO BASE (TENDENCIA)
            ======================== */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Mono&display=swap');
 
@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #F3F4F6;
+            background-color: #F4F6F9;
             color: #111827;
             margin: 0;
             padding: 40px 20px;
@@ -33,34 +33,36 @@
             border-radius: 24px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
             text-align: center;
             margin-top: 5vh;
+            border: 1px solid rgba(0,0,0,0.03);
         }
         #loginScreen h2 { margin-top: 0; font-weight: 800; color: #4F46E5; }
         .error-msg { color: #EF4444; font-size: 0.85rem; margin-top: 10px; min-height: 20px;}
 
         /* INTERFAZ PRINCIPAL */
-        #appScreen { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; }
+        #appScreen { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
 
         .header-actions {
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
-            padding: 16px 24px;
-            border-radius: 20px;
-            margin-bottom: 32px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            padding: 18px 24px;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
             flex-wrap: wrap;
             gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .header-title {
             font-weight: 800;
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             margin: 0;
             display: flex;
             align-items: center;
@@ -70,89 +72,159 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .user-badge { font-size: 0.75rem; background: #111827; color: white; padding: 4px 10px; border-radius: 12px; -webkit-text-fill-color: initial; }
-        .header-date { font-size: 0.85rem; font-weight: 700; color: #4B5563; background: #E5E7EB; padding: 4px 12px; border-radius: 20px; -webkit-text-fill-color: initial; }
-        .nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+        .user-badge { font-size: 0.75rem; background: #111827; color: white; padding: 5px 12px; border-radius: 14px; -webkit-text-fill-color: initial; font-weight: 700; }
+        .header-date { font-size: 0.85rem; font-weight: 700; color: #4B5563; background: #E5E7EB; padding: 5px 14px; border-radius: 20px; -webkit-text-fill-color: initial; }
+        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
 
+        /* ========================
+           PANEL DE ESTADÍSTICAS (DASHBOARD)
+           ======================== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-label { font-size: 0.8rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-size: 1.75rem; font-weight: 800; color: #111827; margin-top: 4px; }
+
+        /* TABLERO */
         .board {
             width: 100%;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 28px;
             margin-bottom: 40px;
         }
 
-        /* DISEÑO TICKET */
+        /* ========================
+           DISEÑO TICKET MEJORADO
+           ======================== */
         .ticket {
             position: relative;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 24px 20px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-            transition: all 0.35s ease;
+            box-shadow: 0 10px 32px rgba(0,0,0,0.03);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             background-color: var(--bg);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.04);
         }
-        .ticket:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .ticket:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
 
+        /* Troquelados laterales ajustados */
         .ticket::before, .ticket::after {
-            content: ''; position: absolute; bottom: 85px; width: 24px; height: 24px; background-color: #F3F4F6; border-radius: 50%; z-index: 2;
+            content: ''; position: absolute; bottom: 82px; width: 24px; height: 24px; background-color: #F4F6F9; border-radius: 50%; z-index: 2;
         }
         .ticket::before { left: -12px; }
         .ticket::after { right: -12px; }
 
-        .ticket-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        .ticket-date { font-family: 'Space Mono', monospace; font-size: 0.75rem; background: rgba(0,0,0,0.06); padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+        .ticket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
+        .ticket-date { font-family: 'Space Mono', monospace; font-size: 0.72rem; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 6px; font-weight: 600; }
         
-        .btn-edit-inline { background: transparent; border: none; cursor: pointer; font-size: 1rem; opacity: 0.6; }
-        .btn-edit-inline:hover { opacity: 1; }
+        .badge { font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-tag { background: rgba(255,255,255,0.6); color: #111827; border: 1px solid rgba(0,0,0,0.08); }
+        .badge-priority { font-weight: 800; background: rgba(255,255,255,0.8); }
 
-        .ticket-title { font-weight: 800; font-size: 1.2rem; margin: 0 0 6px 0; }
-        .ticket-desc { font-size: 0.9rem; opacity: 0.75; margin: 0; line-height: 1.4; }
+        .ticket-content { flex-grow: 1; margin-bottom: 12px; }
+        .ticket-title { font-weight: 800; font-size: 1.15rem; margin: 0 0 6px 0; line-height: 1.3; }
+        .ticket-desc { font-size: 0.88rem; opacity: 0.8; margin: 0 0 12px 0; line-height: 1.4; }
 
-        .divider { width: 100%; height: 2px; background-image: linear-gradient(to right, rgba(0,0,0,0.2) 50%, rgba(255,255,255,0) 0%); background-size: 10px 2px; background-repeat: repeat-x; margin: 24px 0 16px 0; }
+        /* Adjuntos / Entregables */
+        .attachment-box {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            border: 1px dashed rgba(0,0,0,0.1);
+        }
+        .attachment-link { color: #4F46E5; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        .attachment-link:hover { text-decoration: underline; }
+
+        /* Sección de Comentarios Ocultable */
+        .comments-section {
+            margin-top: 12px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 14px;
+            padding: 12px;
+            display: none;
+        }
+        .comments-section.open { display: block; }
+        .comment-list { max-height: 120px; overflow-y: auto; margin-bottom: 8px; padding-right: 4px; }
+        .comment-item { font-size: 0.78rem; line-height: 1.35; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+        .comment-user { font-weight: 700; color: #374151; }
+        .comment-text { color: #4B5563; }
+        .comment-time { font-size: 0.65rem; color: #9CA3AF; display: block; margin-top: 2px; }
+        
+        .comment-input-group { display: flex; gap: 6px; }
+        .comment-input { flex: 1; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); font-size: 0.78rem; font-family: inherit; }
+        
+        .btn-toggle-comments { background: rgba(0,0,0,0.04); border: none; padding: 6px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; width: 100%; justify-content: center; margin-top: 8px; }
+        .btn-toggle-comments:hover { background: rgba(0,0,0,0.08); }
+
+        .divider { width: 100%; height: 2px; background-image: linear-gradient(to right, rgba(0,0,0,0.15) 50%, rgba(255,255,255,0) 0%); background-size: 10px 2px; background-repeat: repeat-x; margin: 18px 0 14px 0; }
         .actions { display: flex; justify-content: space-between; gap: 6px; }
 
-        button { border: none; border-radius: 14px; padding: 10px 14px; font-size: 0.85rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: 0.2s; }
+        /* BOTONES */
+        button { border: none; border-radius: 14px; padding: 10px 14px; font-size: 0.82rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: 0.2s; }
         .btn-primary { background: #111827; color: #fff; width: 100%; }
         .btn-primary:hover { background: #374151; }
         .btn-secondary { background: #fff; color: #111827; border: 1px solid #E5E7EB; }
+        .btn-secondary:hover { background: #F9FAFB; }
         .btn-danger { background: #FEE2E2; color: #EF4444; }
+        .btn-mini { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; }
         
-        .ticket .actions button { background: rgba(255, 255, 255, 0.45); color: #111827; flex: 1; }
+        .ticket .actions button { background: rgba(255, 255, 255, 0.45); color: #111827; flex: 1; padding: 8px 10px; }
         .btn-check:hover { background: #10B981 !important; color: white; }
         .btn-pause:hover { background: #F59E0B !important; color: white; }
         .btn-cancel:hover { background: #EF4444 !important; color: white; }
 
-        .ticket.completed { opacity: 0.5; filter: grayscale(70%); }
+        .ticket.completed { opacity: 0.5; filter: grayscale(50%); }
         .ticket.completed .ticket-title { text-decoration: line-through; }
-        .ticket.paused { border: 2px dashed rgba(0,0,0,0.25); }
-        .ticket.canceled { opacity: 0.35; filter: grayscale(100%); }
-        .ticket.canceled .ticket-title { text-decoration: line-through; }
+        .ticket.paused { border: 2px dashed rgba(0,0,0,0.2); }
+        .ticket.canceled { opacity: 0.35; filter: grayscale(90%); }
 
         /* MODALES */
-        .form-group { margin-bottom: 16px; text-align: left; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: #4B5563; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #E5E7EB; border-radius: 12px; font-family: inherit; }
+        .form-group { margin-bottom: 14px; text-align: left; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 6px; color: #4B5563; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 12px; font-family: inherit; font-size: 0.9rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: white; padding: 32px; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); transform: scale(0.9); transition: 0.3s; }
+        .modal-content { background: white; padding: 28px; border-radius: 24px; width: 100%; max-width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); transform: scale(0.9); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
         
         .pagination { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; width: 100%; }
         .pagination button { width: 40px; height: 40px; padding: 0; border-radius: 12px; }
     </style>
 
+    <!-- KITS SDK FIREBASE COMPAT -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 
+    <!-- LOGIN -->
     <div id="loginScreen">
-        <h2>Tickets Cloud</h2>
+        <h2>Tickets Cloud App</h2>
         <div class="form-group">
             <label>Usuario</label>
             <input type="text" id="loginUser" placeholder="Usuario">
@@ -163,71 +235,106 @@
         </div>
         <button class="btn-primary" onclick="login()">Entrar</button>
         <div id="loginError" class="error-msg"></div>
-        <p style="font-size: 0.8rem; color: #666; margin-top: 20px;">Cuentas de equipo iniciales:<br><b>admin</b> (admin123) | <b>creativo</b> (123) | <b>alcaldia</b> (123)</p>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 20px;">Cuentas por defecto:<br><b>admin</b> (admin123) | <b>creativo</b> (123) | <b>alcaldia</b> (123)</p>
     </div>
 
+    <!-- APP ESCENARIO PRINCIPAL -->
     <div id="appScreen" class="hidden">
         <div class="header-actions">
-            <h1 class="header-title">🎫 Mis Tickets <span id="userBadge" class="user-badge"></span> <span class="header-date" id="displayDate"></span></h1>
+            <h1 class="header-title">🎫 Panel Corporativo <span id="userBadge" class="user-badge"></span> <span class="header-date" id="displayDate"></span></h1>
             <div class="nav-buttons">
                 <button id="btnAdminUsers" class="btn-secondary hidden" onclick="openUserModal()">👥 Usuarios</button>
+                <button id="btnExportExcel" class="btn-secondary hidden" onclick="exportCompletedToExcel()">📥 Exportar Excel</button>
                 <button class="btn-primary" onclick="openTaskModal()">+ Nuevo Ticket</button>
                 <button class="btn-danger" onclick="logout()">Salir</button>
             </div>
+        </div>
+
+        <!-- DASHBOARD DE ESTADÍSTICAS (Solo Admin) -->
+        <div id="adminDashboard" class="dashboard-grid hidden">
+            <div class="stat-card"><span class="stat-label">Total Tickets</span><span class="stat-value" id="statTotal">0</span></div>
+            <div class="stat-card"><span class="stat-label">Pendientes</span><span class="stat-value" id="statPending">0</span></div>
+            <div class="stat-card"><span class="stat-label">Concluidos</span><span class="stat-value" id="statCompleted">0</span></div>
+            <div class="stat-card"><span class="stat-label">En Pausa</span><span class="stat-value" id="statPaused">0</span></div>
         </div>
 
         <div class="board" id="ticketBoard"></div>
         <div class="pagination" id="paginationControls"></div>
     </div>
 
+    <!-- MODAL TAREAS (AGREGAR / EDITAR) -->
     <div class="modal-overlay" id="taskModal">
         <div class="modal-content">
-            <h3 id="modalTitle">Nuevo Ticket</h3>
+            <h3 id="modalTitle">Nuevo Ticket de Trabajo</h3>
             <input type="hidden" id="taskId">
             <div class="form-group">
                 <label>Título de la Tarea</label>
-                <input type="text" id="taskTitle" placeholder="Título">
+                <input type="text" id="taskTitle" placeholder="Ej. Diseño de Identidad Visual">
             </div>
             <div class="form-group">
-                <label>Descripción</label>
-                <textarea id="taskDesc" rows="3" placeholder="Detalles..."></textarea>
+                <label>Descripción del Requerimiento</label>
+                <textarea id="taskDesc" rows="3" placeholder="Detalles específicos..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="taskCategory">
+                        <option value="General">General</option>
+                        <option value="Fotografía">Fotografía</option>
+                        <option value="Audiovisual">Audiovisual</option>
+                        <option value="Prensa">Prensa</option>
+                        <option value="Diseño">Diseño</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Límite</label>
+                    <input type="date" id="taskDeadline">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Entregable / Adjunto (Opcional)</label>
+                <input type="file" id="taskFile" onchange="handleFileUpload()">
+                <input type="hidden" id="taskAttachmentUrl">
+                <input type="hidden" id="taskAttachmentName">
+                <div id="uploadStatus" style="font-size:0.75rem; color:#4F46E5; margin-top:4px;"></div>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('taskModal')">Cancelar</button>
-                <button class="btn-primary" onclick="saveTask()">Guardar</button>
+                <button class="btn-primary" id="btnSaveTask" onclick="saveTask()">Guardar Ticket</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL USUARIOS (ADMIN ONLY) -->
     <div class="modal-overlay" id="userModal">
         <div class="modal-content">
-            <h3>Crear Nuevo Usuario</h3>
+            <h3>Crear Registro de Usuario</h3>
             <div class="form-group">
                 <label>Nombre de Usuario</label>
-                <input type="text" id="newUsername" placeholder="Ej. diseñador2">
+                <input type="text" id="newUsername" placeholder="Ej. marcos_creativo">
             </div>
             <div class="form-group">
-                <label>Contraseña</label>
+                <label>Contraseña Acceso</label>
                 <input type="password" id="newUserPass" placeholder="******">
             </div>
             <div class="form-group">
-                <label>Rol de Acceso</label>
+                <label>Rol Asignado</label>
                 <select id="newUserRole">
                     <option value="admin">Administrador (Control Total)</option>
-                    <option value="designer">Diseñador (Solo Completar)</option>
-                    <option value="client">Cliente (Pausa, Cancelar, Editar)</option>
+                    <option value="designer">Diseñador (Agregar y Completar)</option>
+                    <option value="client">Cliente (Agregar, Editar, Pausa, Cancelar)</option>
                 </select>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('userModal')">Cancelar</button>
-                <button class="btn-primary" onclick="createUser()">Crear Usuario</button>
+                <button class="btn-primary" onclick="createUser()">Registrar</button>
             </div>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN EXACTA DE TU FIREBASE
+        // CONFIGURACIÓN ASIGNADA DE FIREBASE
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyBuM3BLTwwBDKWX8pRHluziwKuxhANsrP0",
@@ -242,6 +349,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        const storage = firebase.storage();
 
         const colors = ['#C4B5FD', '#FCD34D', '#86EFAC', '#F9A8D4', '#93C5FD', '#FDBA74'];
         const ITEMS_PER_PAGE = 20;
@@ -251,14 +359,13 @@
         let usersDB = [];
 
         document.getElementById('displayDate').innerText = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-
         const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
         const getFormattedDate = () => {
             const d = new Date();
             return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
         };
 
-        // Sincronización en tiempo real de Usuarios
+        // Escucha en tiempo real de Usuarios
         db.ref('users').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -273,24 +380,68 @@
             }
         });
 
-        // Sincronización en tiempo real de Tickets
+        // Escucha en tiempo real de Tickets
         db.ref('tickets').on('value', (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                tasks = Object.values(data);
-            } else {
-                const defaultTasks = [
-                    { id: 1, title: 'Revisar guion del spot', desc: 'Edición final para el 27 Festival de la Herranza Andina - Tributo a la Pachamama', date: getFormattedDate(), state: '', color: '#C4B5FD' },
-                    { id: 2, title: 'Confirmar temática', desc: 'Actualizar flyers de Alquitara Rústico', date: getFormattedDate(), state: '', color: '#FCD34D' },
-                    { id: 3, title: 'Redactar nota de prensa', desc: 'Borrador sobre obras en Uliachin', date: getFormattedDate(), state: 'completed', color: '#86EFAC' },
-                    { id: 4, title: 'Revisión de proyecto visual', desc: 'Verificar descripciones del Muqui y la Glorieta en Cuando la luna alumbraba', date: getFormattedDate(), state: '', color: '#F9A8D4' }
-                ];
-                defaultTasks.forEach(t => db.ref('tickets/tk_' + t.id).set(t));
-                tasks = defaultTasks;
-            }
+            tasks = data ? Object.values(data) : [];
+            calculateStats();
             if (currentUser) renderTickets();
         });
 
+        // Dashboard métricas
+        function calculateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.state === 'completed').length;
+            const paused = tasks.filter(t => t.state === 'paused').length;
+            const pending = total - completed - tasks.filter(t => t.state === 'canceled').length;
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statCompleted').innerText = completed;
+            document.getElementById('statPaused').innerText = paused;
+            document.getElementById('statPending').innerText = pending;
+        }
+
+        // Lógica Semáforo Prioridades (Fechas Límite)
+        function getPriorityBadge(deadlineStr) {
+            if (!deadlineStr) return '';
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const deadline = new Date(deadlineStr);
+            deadline.setHours(0,0,0,0);
+            
+            const diffDays = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) return '<span class="badge badge-priority" style="color:#EF4444;">🔴 Overdue</span>';
+            if (diffDays <= 2) return '<span class="badge badge-priority" style="color:#D97706;">🟡 Urgente</span>';
+            return '<span class="badge badge-priority" style="color:#059669;">🟢 Al día</span>';
+        }
+
+        // Subida de Archivos a Firebase Storage (Entregables)
+        window.handleFileUpload = function() {
+            const fileCtrl = document.getElementById('taskFile');
+            const file = fileCtrl.files[0];
+            if (!file) return;
+
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.innerText = "Subiendo archivo...";
+            document.getElementById('btnSaveTask').disabled = true;
+
+            const storageRef = storage.ref('entregables/' + Date.now() + '_' + file.name);
+            storageRef.put(file).then((snapshot) => {
+                storageRef.getDownloadURL().then((url) => {
+                    document.getElementById('taskAttachmentUrl').value = url;
+                    document.getElementById('taskAttachmentName').value = file.name;
+                    statusDiv.innerText = "✓ Archivo listo.";
+                    document.getElementById('btnSaveTask').disabled = false;
+                });
+            }).catch(error => {
+                console.error("Error subiendo archivo:", error);
+                statusDiv.innerText = "Error al subir. Asegúrate de tener las reglas activas.";
+                document.getElementById('btnSaveTask').disabled = false;
+            });
+        };
+
+        // Control de Sesión
         function login() {
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
@@ -303,17 +454,22 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('appScreen').classList.remove('hidden');
                 
-                const rolesNombres = { 'admin': 'Admin', 'designer': 'Diseñador', 'client': 'Cliente' };
-                document.getElementById('userBadge').innerText = `${u} (${rolesNombres[currentUser.role]})`;
+                const labelRoles = { 'admin': 'Admin', 'designer': 'Diseñador', 'client': 'Cliente' };
+                document.getElementById('userBadge').innerText = `${u} (${labelRoles[currentUser.role]})`;
                 
+                // RESTRICCIÓN EXCLUSIVA ADMIN: Control de vistas y exportación
                 if (currentUser.role === 'admin') {
                     document.getElementById('btnAdminUsers').classList.remove('hidden');
+                    document.getElementById('btnExportExcel').classList.remove('hidden');
+                    document.getElementById('adminDashboard').classList.remove('hidden');
                 } else {
                     document.getElementById('btnAdminUsers').classList.add('hidden');
+                    document.getElementById('btnExportExcel').classList.add('hidden');
+                    document.getElementById('adminDashboard').classList.add('hidden');
                 }
                 renderTickets();
             } else {
-                errorDiv.innerText = "Usuario o contraseña incorrectos.";
+                errorDiv.innerText = "Credenciales incorrectas.";
             }
         }
 
@@ -330,12 +486,12 @@
             const pass = document.getElementById('newUserPass').value.trim();
             const role = document.getElementById('newUserRole').value;
 
-            if (!user || !pass) return alert('Completa todos los campos.');
-            if (usersDB.find(u => u.user === user)) return alert('El usuario ya existe.');
+            if (!user || !pass) return alert('Campos obligatorios vacíos.');
+            if (usersDB.find(u => u.user === user)) return alert('Usuario ya registrado.');
 
             db.ref('users/' + user).set({ user, pass, role }, (err) => {
                 if(!err) {
-                    alert(`Usuario ${user} creado.`);
+                    alert(`Cuenta para ${user} registrada.`);
                     closeModal('userModal');
                     document.getElementById('newUsername').value = '';
                     document.getElementById('newUserPass').value = '';
@@ -343,6 +499,7 @@
             });
         }
 
+        // Renderizado del Tablero con Permisos Avanzados
         function renderTickets() {
             const board = document.getElementById('ticketBoard');
             board.innerHTML = '';
@@ -365,18 +522,58 @@
                 if (canComplete) actionsHTML += `<button class="btn-check" onclick="changeState(${task.id}, 'completed')">✔ Listo</button>`;
                 if (canPauseCancel) {
                     actionsHTML += `<button class="btn-pause" onclick="changeState(${task.id}, 'paused')">⏸ Pausa</button>`;
-                    actionsHTML += `<button class="btn-cancel" onclick="changeState(${task.id}, 'canceled')">✖ Cancelar</button>`;
+                    actionsHTML += `<button class="btn-cancel" onclick="changeState(${task.id}, 'canceled')">✖</button>`;
+                }
+
+                // Armado de adjuntos
+                let attachHTML = '';
+                if (task.attachmentUrl) {
+                    attachHTML = `
+                        <div class="attachment-box">
+                            <span style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block;">📁 ${task.attachmentName}</span>
+                            <a href="${task.attachmentUrl}" target="_blank" class="attachment-link">Descargar</a>
+                        </div>
+                    `;
+                }
+
+                // Armado de comentarios
+                let commentsHTML = '';
+                let numComments = task.comments ? Object.keys(task.comments).length : 0;
+                if (task.comments) {
+                    Object.values(task.comments).forEach(c => {
+                        commentsHTML += `
+                            <div class="comment-item">
+                                <span class="comment-user">${c.user}:</span>
+                                <span class="comment-text">${c.text}</span>
+                                <span class="comment-time">${c.date}</span>
+                            </div>
+                        `;
+                    });
                 }
 
                 ticket.innerHTML = `
                     <div class="ticket-header">
-                        <span class="ticket-date">N° ${String(task.id).padStart(4, '0')} • ${task.date}</span>
+                        <span class="ticket-date">N° ${String(task.id).padStart(4, '0')}</span>
+                        <span class="badge badge-tag">${task.category || 'General'}</span>
+                        ${getPriorityBadge(task.deadline)}
                         ${editBtnHTML}
                     </div>
                     <div class="ticket-content">
                         <h3 class="ticket-title">${task.title}</h3>
                         <p class="ticket-desc">${task.desc}</p>
+                        ${attachHTML}
                     </div>
+                    
+                    <button class="btn-toggle-comments" onclick="toggleCommentsSection(${task.id})">💬 Comentarios (${numComments})</button>
+                    
+                    <div class="comments-section" id="comments_${task.id}">
+                        <div class="comment-list">${commentsHTML}</div>
+                        <div class="comment-input-group">
+                            <input type="text" class="comment-input" id="comInput_${task.id}" placeholder="Escribe un comentario...">
+                            <button class="btn-primary btn-mini" onclick="submitComment(${task.id})">Enviar</button>
+                        </div>
+                    </div>
+
                     <div class="divider"></div>
                     <div class="actions">${actionsHTML}</div>
                 `;
@@ -385,6 +582,24 @@
 
             renderPagination(sortedTasks.length);
         }
+
+        window.toggleCommentsSection = function(id) {
+            const sec = document.getElementById('comments_' + id);
+            sec.classList.toggle('open');
+        };
+
+        window.submitComment = function(id) {
+            const input = document.getElementById('comInput_' + id);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const timeData = new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) + ' - ' + getFormattedDate();
+            const newComment = { user: currentUser.user, text, date: timeData };
+
+            db.ref(`tickets/tk_${id}/comments`).push(newComment, (err) => {
+                if(!err) input.value = '';
+            });
+        };
 
         function renderPagination(total) {
             const pages = Math.ceil(total / ITEMS_PER_PAGE);
@@ -411,47 +626,90 @@
 
         window.openTaskModal = function(id = null) {
             if (id && currentUser.role === 'designer') return;
+            
+            // Limpiar campos
+            document.getElementById('taskFile').value = '';
+            document.getElementById('uploadStatus').innerText = '';
+            document.getElementById('taskAttachmentUrl').value = '';
+            document.getElementById('taskAttachmentName').value = '';
+
             if (id) {
                 const task = tasks.find(t => t.id === id);
-                document.getElementById('modalTitle').innerText = 'Editar Ticket';
+                document.getElementById('modalTitle').innerText = 'Modificar Ticket';
                 document.getElementById('taskId').value = task.id;
                 document.getElementById('taskTitle').value = task.title;
                 document.getElementById('taskDesc').value = task.desc;
+                document.getElementById('taskCategory').value = task.category || 'General';
+                document.getElementById('taskDeadline').value = task.deadline || '';
+                if(task.attachmentUrl) {
+                    document.getElementById('taskAttachmentUrl').value = task.attachmentUrl;
+                    document.getElementById('taskAttachmentName').value = task.attachmentName;
+                    document.getElementById('uploadStatus').innerText = "Contiene un adjunto cargado.";
+                }
             } else {
-                document.getElementById('modalTitle').innerText = 'Nuevo Ticket';
+                document.getElementById('modalTitle').innerText = 'Emitir Nuevo Ticket';
                 document.getElementById('taskId').value = '';
                 document.getElementById('taskTitle').value = '';
                 document.getElementById('taskDesc').value = '';
+                document.getElementById('taskCategory').value = 'General';
+                document.getElementById('taskDeadline').value = '';
             }
             document.getElementById('taskModal').classList.add('active');
         };
 
-        window.openUserModal = function() { document.getElementById('userModal').classList.add('active'); };
         window.closeModal = function(modalId) { document.getElementById(modalId).classList.remove('active'); };
 
         window.saveTask = function() {
             const id = document.getElementById('taskId').value;
             const title = document.getElementById('taskTitle').value.trim();
             const desc = document.getElementById('taskDesc').value.trim();
+            const category = document.getElementById('taskCategory').value;
+            const deadline = document.getElementById('taskDeadline').value;
+            const attachmentUrl = document.getElementById('taskAttachmentUrl').value;
+            const attachmentName = document.getElementById('taskAttachmentName').value;
 
-            if (!title) return alert('Por favor, ingresa un título.');
+            if (!title) return alert('Ingresa un título.');
 
             if (id) {
-                db.ref('tickets/tk_' + id).update({ title, desc }, (err) => {
+                db.ref('tickets/tk_' + id).update({ title, desc, category, deadline, attachmentUrl, attachmentName }, (err) => {
                     if(!err) closeModal('taskModal');
                 });
             } else {
                 const nextId = tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
                 const newTicket = {
-                    id: nextId, title, desc, date: getFormattedDate(), state: '', color: getRandomColor()
+                    id: nextId, title, desc, category, deadline, attachmentUrl, attachmentName,
+                    date: getFormattedDate(), state: '', color: getRandomColor()
                 };
                 db.ref('tickets/tk_' + nextId).set(newTicket, (err) => {
-                    if(!err) {
-                        currentPage = 1;
-                        closeModal('taskModal');
-                    }
+                    if(!err) { currentPage = 1; closeModal('taskModal'); }
                 });
             }
+        };
+
+        // RESTRICCIÓN EXCLUSIVA ADMIN: Exportación Excel filtrada
+        window.exportCompletedToExcel = function() {
+            if (currentUser.role !== 'admin') return alert('Acceso denegado.');
+            const completedTasks = tasks.filter(t => t.state === 'completed');
+            
+            if (completedTasks.length === 0) {
+                return alert('No hay tickets marcados como Listos (✔) para exportar.');
+            }
+
+            let csvContent = "\uFEFF"; 
+            csvContent += "Código Ticket;Categoría;Fecha Creación;Fecha Límite;Título;Descripción;Estado\n";
+
+            completedTasks.forEach(t => {
+                csvContent += `TK-${String(t.id).padStart(4, '0')};${t.category || 'General'};${t.date};${t.deadline || 'S/D'};"${t.title.replace(/"/g, '""')}";"${t.desc.replace(/"/g, '""')}";Concluido\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `reporte_tickets_concluidos_${getFormattedDate().replace(/\//g, '-')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         };
     </script>
 </body>
